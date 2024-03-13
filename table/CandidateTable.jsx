@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import {
     flexRender,
@@ -7,6 +7,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+import { fetchCandidates } from '../db/request.js'; 
 
 const columns = [
     {
@@ -29,16 +30,23 @@ const columns = [
         header: 'Номер телефона',
         cell: (props) => <p>{props.getValue()}</p>
     }
-]
+];
 
 const CandidateTable = () => {
-    const data = [
-        { flmname: 'Ivan Ivan Ivan', linkVK: 'контора п', education: 'Бездарь', phoneNumber: '88005553535' }
-    ]
+    const [candidates, setCandidates] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await fetchCandidates();
+            setCandidates(data);
+        };
+
+        fetchData();
+    }, []);
 
     const table = useReactTable({
         columns,
-        data,
+        data: candidates,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -70,4 +78,4 @@ const CandidateTable = () => {
     );
 };
 
-export default CandidateTable
+export default CandidateTable;
