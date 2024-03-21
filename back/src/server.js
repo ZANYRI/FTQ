@@ -1,16 +1,31 @@
 import express from 'express';
 import { sequelize, Candidate } from './db.js';
+import { getCandidateDataFromVK } from './vkapi.js';
+
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-// Middleware для обработки CORS
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Замените на адрес вашего клиентского приложения
+  res.header('Access-Control-Allow-Origin', '*'); 
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
+});
+
+
+
+app.post('/vk', async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const userData = await getCandidateDataFromVK(userId);
+    res.json(userData);
+  } catch (error) {
+    console.error('Ошибка при получении данных из VK API:', error);
+    res.status(500).json({ error: 'Произошла ошибка при получении данных из VK API' });
+  }
 });
 
 app.get('/candidates', async (req, res) => {
