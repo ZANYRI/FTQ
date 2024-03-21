@@ -1,5 +1,1 @@
-# React + Vite
-
-`` Easy Readme ``
-
-describe me
+С каждым днём мы всё дальше и дальше от бога

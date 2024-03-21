@@ -1,7 +1,28 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  build: {
+    rollupOptions: {
+      input: {
+        index: './src/table/index.html',
+        other: './src/popup/popup.html',
+      },
+      output: {
+        chunkFileNames: (chunkInfo) => {
+          if (chunkInfo.name === 'index') {
+            return 'dist/index/[name]-[hash].js';
+          } else {
+            return 'dist/popup/[name]-[hash].js';
+          }
+        },
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === 'index') {
+            return 'dist/index/[name]-[hash].js';
+          } else {
+            return 'dist/popup/[name]-[hash].js';
+          }
+        },
+      },
+    },
+  },
+});

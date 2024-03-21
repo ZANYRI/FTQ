@@ -12,7 +12,7 @@ const fetchCandidates = async () => {
 };
 
 const createCandidate = async (candidateData) => {
-  console.log("Запуск функции createCandidate...");
+  console.log("Запуск функции createCandidate");
   try {
     const response = await axios.post(
       "http://localhost:3000/candidates",
@@ -25,4 +25,15 @@ const createCandidate = async (candidateData) => {
   }
 };
 
-export { fetchCandidates, createCandidate };
+const sendUserIdToVK = async (userId) => {
+  console.log("Отправка userId в /vk");
+  try {
+    const response = await axios.post("http://localhost:3000/vk", { userId });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при отправке userId в /vk:", error);
+    throw error;
+  }
+};
+
+export { fetchCandidates, createCandidate, sendUserIdToVK };

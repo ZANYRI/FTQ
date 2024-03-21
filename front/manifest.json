@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Кандидаты",
+    "version": "1.0",
+    "description": "Таблица кандидатов на работу",
+    "permissions": [
+      "activeTab",
+      "storage",
+      "identity",
+      "alarms",
+      "notifications",
+      "cookies"
+    ],
+    "action": {
+      "default_popup": "./dist/index.html"
+    }
+  }
+  
