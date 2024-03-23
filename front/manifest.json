@@ -12,7 +12,7 @@
       "cookies"
     ],
     "action": {
-      "default_popup": "./dist/index.html"
+      "default_popup": "./src/popup/popup.html"
     }
   }
   
