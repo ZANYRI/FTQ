@@ -1,27 +1,13 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite'
+import reactRefresh from '@vitejs/plugin-react'
 
-export default defineConfig({
+export default defineConfig ({
+  plugins:[reactRefresh()],
   build: {
     rollupOptions: {
       input: {
-        index: './src/table/index.html',
-        other: './src/popup/popup.html',
-      },
-      output: {
-        chunkFileNames: (chunkInfo) => {
-          if (chunkInfo.name === 'index') {
-            return 'dist/index/[name]-[hash].js';
-          } else {
-            return 'dist/popup/[name]-[hash].js';
-          }
-        },
-        entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === 'index') {
-            return 'dist/index/[name]-[hash].js';
-          } else {
-            return 'dist/popup/[name]-[hash].js';
-          }
-        },
+        table: './src/table/table.html',
+        options: './src/popup/popup.html',
       },
     },
   },

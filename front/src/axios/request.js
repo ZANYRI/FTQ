@@ -25,6 +25,36 @@ const createCandidate = async (candidateData) => {
   }
 };
 
+const updateCandidate = async (id, candidateData) => {
+  console.log("Запуск функции updateCandidate");
+  try {
+    const response = await axios.patch( 
+      `http://localhost:3000/candidates/${id}`,
+      candidateData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при обновлении кандидата:", error);
+    throw error;
+  }
+};
+
+
+const deleteCandidate = async (id) => {
+  console.log("Запуск функции deleteCandidate");
+  try {
+    const response = await axios.delete(
+      `http://localhost:3000/candidates/${id}`
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при удалении кандидата:", error);
+    throw error;
+  }
+};
+
+
 const sendUserIdToVK = async (userId) => {
   console.log("Отправка userId в /vk");
   try {
@@ -36,4 +66,4 @@ const sendUserIdToVK = async (userId) => {
   }
 };
 
-export { fetchCandidates, createCandidate, sendUserIdToVK };
+export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK };

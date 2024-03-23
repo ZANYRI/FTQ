@@ -1,6 +1,7 @@
 import express from 'express';
 import { sequelize, Candidate } from './db.js';
 import { getCandidateDataFromVK } from './vkapi.js';
+import cors from 'cors';
 
 
 const app = express();
@@ -9,11 +10,7 @@ const PORT = 3000;
 app.use(express.json());
 
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); 
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+app.use(cors())
 
 
 
@@ -49,7 +46,7 @@ app.post('/candidates', async (req, res) => {
   }
 });
 
-app.put('/candidates/:id', async (req, res) => {
+app.patch('/candidates/:id', async (req, res) => {
   const candidateId = req.params.id;
   const { flmname, linkVK, education, phoneNumber } = req.body;
   try {
@@ -57,10 +54,10 @@ app.put('/candidates/:id', async (req, res) => {
     if (!candidate) {
       return res.status(404).json({ error: 'Кандидат не найден' });
     }
-    candidate.flmname = flmname;
-    candidate.linkVK = linkVK;
-    candidate.education = education;
-    candidate.phoneNumber = phoneNumber;
+    if (flmname) candidate.flmname = flmname;
+    if (linkVK) candidate.linkVK = linkVK;
+    if (education) candidate.education = education;
+    if (phoneNumber) candidate.phoneNumber = phoneNumber;
     await candidate.save();
     res.json(candidate);
   } catch (error) {
@@ -69,10 +66,11 @@ app.put('/candidates/:id', async (req, res) => {
   }
 });
 
+
 app.delete('/candidates/:id', async (req, res) => {
   const candidateId = req.params.id;
   try {
-    const candidate = await Candidate.findByPk(candidateId);
+    const candidate = await Candidate.findByPk(Number(candidateId));
     if (!candidate) {
       return res.status(404).json({ error: 'Кандидат не найден' });
     }
