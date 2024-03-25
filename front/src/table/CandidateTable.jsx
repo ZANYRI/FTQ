@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { fetchCandidates, createCandidate, updateCandidate, deleteCandidate } from "../axios/request";
+import { fetchCandidates, createCandidate, updateCandidate, deleteCandidate, updateCandidateData } from "../axios/request";
 import { flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 
 const columns = [
@@ -110,6 +110,17 @@ const CandidateTable = () => {
     }
   };
 
+  const handleRefreshCandidate = async (id) => {
+    try {
+      const updatedCandidate = await updateCandidateData(id);
+      console.log('Данные кандидата успешно обновлены:', updatedCandidate);
+      // Здесь можно реализовать логику обработки успешного обновления кандидата
+    } catch (error) {
+      console.error('Ошибка при обновлении кандидата:', error.message);
+    }
+  };
+  
+
   const table = useReactTable({
     columns,
     data: candidates,
@@ -135,11 +146,12 @@ const CandidateTable = () => {
           <Box className="tr" key={row.id}>
             {row.getVisibleCells().map((cell) => (
               <Box className="td" width={cell.column.getSize()} key={cell.id} p="10px">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                {flexRender(                cell.column.columnDef.cell, cell.getContext())}
               </Box>
             ))}
             <Button onClick={() => handleOpenEditCandidateModal(row.original)}>Редактировать</Button>
             <Button onClick={() => handleDeleteCandidate(row.original.id)}>Удалить</Button>
+            <Button onClick={() => handleRefreshCandidate(row.original.id)}>Обновить</Button>
           </Box>
         ))}
       </Box>
@@ -210,3 +222,4 @@ const CandidateTable = () => {
 };
 
 export default CandidateTable;
+

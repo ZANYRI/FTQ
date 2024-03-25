@@ -1,18 +1,29 @@
 import express from 'express';
 import { sequelize, Candidate } from './db.js';
 import { getCandidateDataFromVK } from './vkapi.js';
+import {getCandidateDataVK} from './vs.js'
 import cors from 'cors';
-
+import bodyParser from 'body-parser';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
 
 
-app.use(cors())
-
-
+app.get('/maxCandidate', async (req, res) => {
+  try {
+    const maxIdCandidate = await Candidate.findOne({
+      order: [['id', 'DESC']]
+    });
+    res.json(maxIdCandidate);
+  } catch (error) {
+    console.error('Ошибка при получении данных о кандидате с максимальным ID:', error);
+    res.status(500).json({ error: 'Произошла ошибка при получении данных о кандидате с максимальным ID' });
+  }
+});
 
 app.post('/vk', async (req, res) => {
   const userId = req.body.userId;
@@ -45,6 +56,39 @@ app.post('/candidates', async (req, res) => {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
+app.post('/candidates/:id/updateFromVK', async (req, res) => {
+  const candidateId = req.params.id;
+  try {
+    
+    const candidate = await Candidate.findByPk(candidateId);
+    if (!candidate) {
+      return res.status(404).json({ error: 'Кандидат не найден' });
+    }
+
+    const userDataFromVK = await getCandidateDataVK(candidate.linkVK);
+
+    const updatedFields = {};
+    if (userDataFromVK.flmname !== candidate.flmname) {
+      updatedFields.flmname = userDataFromVK.flmname;
+    }
+    if (userDataFromVK.education !== candidate.education) {
+      updatedFields.education = userDataFromVK.education;
+    }
+    if (userDataFromVK.phoneNumber !== candidate.phoneNumber) {
+      updatedFields.phoneNumber = userDataFromVK.phoneNumber;
+    }
+    if (Object.keys(updatedFields).length > 0) {
+      await candidate.update(updatedFields);
+      res.json({ message: 'Данные кандидата успешно обновлены', updatedFields });
+    } else {
+      res.json({ message: 'Данные кандидата не изменялись' });
+    }
+  } catch (error) {
+    console.error('Ошибка при обновлении данных кандидата из VK API:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 
 app.patch('/candidates/:id', async (req, res) => {
   const candidateId = req.params.id;
@@ -65,7 +109,6 @@ app.patch('/candidates/:id', async (req, res) => {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
-
 
 app.delete('/candidates/:id', async (req, res) => {
   const candidateId = req.params.id;

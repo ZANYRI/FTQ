@@ -66,4 +66,29 @@ const sendUserIdToVK = async (userId) => {
   }
 };
 
-export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK };
+const updateCandidateData = async (id, newData) => {
+  try {
+    const response = await axios.post(`http://localhost:3000/candidates/${id}/updateFromVK`, newData);
+    if (!response.data) {
+      throw new Error('Ошибка при обновлении данных кандидата');
+    }
+    const updatedCandidate = response.data;
+    console.log('Данные кандидата успешно обновлены:', updatedCandidate);
+    return updatedCandidate;
+  } catch (error) {
+    console.error('Ошибка при обновлении данных кандидата:', error.message);
+    throw error;
+  }
+};
+
+const getMaxCandidate = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/maxCandidate');
+    return response.data;
+  } catch (error) {
+    console.error('Ошибка при получении данных о кандидате с максимальным ID:', error);
+    throw error;
+  }
+};
+
+export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK,updateCandidateData,getMaxCandidate };
