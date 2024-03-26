@@ -85,7 +85,7 @@ const CopyID = () => {
           <Table variant="simple">
             <Tbody>
               <Tr>
-                <Td>Имя:</Td>
+                <Td>ФИО:</Td>
                 <Td><Input name="flmname" value={editedUserData.flmname} onChange={handleChange} /></Td>
               </Tr>
               <Tr>
