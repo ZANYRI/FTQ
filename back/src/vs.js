@@ -12,7 +12,6 @@ const getCandidateDataVK = async (linkVK) => {
     
   
     const response = await axios.get(`https://api.vk.com/method/users.get?user_ids=${userId}&fields=domain,occupation,contacts&access_token=${accessToken}&v=5.199`);
-    console.log('Данные о пользователе из VK API:', response.data);
     if (!response.data.response || response.data.response.length === 0) {
       throw new Error('Данные о пользователе не найдены');
     }

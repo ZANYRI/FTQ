@@ -13,32 +13,29 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.get('/maxCandidate', async (req, res) => {
-  try {
-    const maxIdCandidate = await Candidate.findOne({
-      order: [['id', 'DESC']]
-    });
-    res.json(maxIdCandidate);
-  } catch (error) {
-    console.error('Ошибка при получении данных о кандидате с максимальным ID:', error);
-    res.status(500).json({ error: 'Произошла ошибка при получении данных о кандидате с максимальным ID' });
-  }
-});
-
 app.post('/vk', async (req, res) => {
   const userId = req.body.userId;
   try {
-    const userData = await getCandidateDataFromVK(userId);
-    res.json(userData);
+    const candidateData = await getCandidateDataFromVK(userId);
+    const existingCandidate = await Candidate.findOne({ where: { linkVK: candidateData.linkVK } });
+    if (existingCandidate) {
+      res.status(400).json({ error: 'Пользователь с подобной ссылкой ВКонтакте уже существует' });
+      return;
+    }
+    const newCandidate = await Candidate.create(candidateData);
+    res.json(newCandidate);
   } catch (error) {
-    console.error('Ошибка при получении данных из VK API:', error);
-    res.status(500).json({ error: 'Произошла ошибка при получении данных из VK API' });
+    console.error('Ошибка при получении данных из VK API или создании кандидата:', error);
+    res.status(500).json({ error: 'Произошла ошибка при получении данных из VK API или создании кандидата' });
   }
 });
 
+
+
+
 app.get('/candidates', async (req, res) => {
   try {
-    const candidates = await Candidate.findAll();
+    const candidates = await Candidate.findAll({order: [['id', 'asc']]});
     res.json(candidates);
   } catch (error) {
     console.error('Ошибка при получении кандидатов:', error);
@@ -56,6 +53,7 @@ app.post('/candidates', async (req, res) => {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
+
 app.post('/candidates/:id/updateFromVK', async (req, res) => {
   const candidateId = req.params.id;
   try {
@@ -88,7 +86,6 @@ app.post('/candidates/:id/updateFromVK', async (req, res) => {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
-
 
 app.patch('/candidates/:id', async (req, res) => {
   const candidateId = req.params.id;

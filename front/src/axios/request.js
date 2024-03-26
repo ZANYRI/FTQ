@@ -81,14 +81,4 @@ const updateCandidateData = async (id, newData) => {
   }
 };
 
-const getMaxCandidate = async () => {
-  try {
-    const response = await axios.get('http://localhost:3000/maxCandidate');
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при получении данных о кандидате с максимальным ID:', error);
-    throw error;
-  }
-};
-
 export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK,updateCandidateData,getMaxCandidate };
