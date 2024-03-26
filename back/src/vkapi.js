@@ -23,6 +23,7 @@ const getCandidateDataFromVK = async (userId) => {
     
     const linkVK = `https://vk.com/id${userData.id}`;
     
+
     const candidateData = {
       flmname: `${userData.first_name} ${userData.last_name}`,
       linkVK,

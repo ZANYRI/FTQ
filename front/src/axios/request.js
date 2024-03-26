@@ -56,15 +56,15 @@ const deleteCandidate = async (id) => {
 
 
 const sendUserIdToVK = async (userId) => {
-  console.log("Отправка userId в /vk");
   try {
-    const response = await axios.post("http://localhost:3000/vk", { userId });
+    const response = await axios.post('http://localhost:3000/vk', { userId });
     return response.data;
   } catch (error) {
-    console.error("Ошибка при отправке userId в /vk:", error);
+    console.error('Ошибка при отправке userId в /vk:', error);
     throw error;
   }
 };
+
 
 const updateCandidateData = async (id, newData) => {
   try {
@@ -81,4 +81,4 @@ const updateCandidateData = async (id, newData) => {
   }
 };
 
-export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK,updateCandidateData,getMaxCandidate };
+export { fetchCandidates, createCandidate,updateCandidate, deleteCandidate, sendUserIdToVK, updateCandidateData };

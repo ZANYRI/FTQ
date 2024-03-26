@@ -24,18 +24,22 @@ const CopyID = () => {
             setShowTable(true);
             setUserData(response);
             setEditedUserData({ ...response });
+            setErrorMessage('');
           } catch (error) {
-            if (error.response && error.response.status === 500) {
+            if (error.response && error.response.status === 400) {
               setErrorMessage('Пользователь с такой ссылкой VK уже существует.');
             } else {
               console.error('Ошибка при отправке userId в /vk:', error);
+              setErrorMessage('Ошибка при отправке userId в /vk. Подробности в консоли.');
             }
           }
         } else {
           console.error('URL текущей вкладки не содержит vk.com');
+          setErrorMessage('URL текущей вкладки не содержит vk.com');
         }
       } else {
         console.error('Невозможно получить URL текущей вкладки');
+        setErrorMessage('Невозможно получить URL текущей вкладки');
       }
     });
   };
@@ -52,8 +56,10 @@ const CopyID = () => {
     try {
       await updateCandidate(userData.id, editedUserData);
       console.log('Данные кандидата успешно обновлены');
+      setErrorMessage(''); 
     } catch (error) {
       console.error('Ошибка при обновлении данных кандидата:', error);
+      setErrorMessage('Ошибка при обновлении данных кандидата. Подробности в консоли.');
     }
   };
 
@@ -69,11 +75,13 @@ const CopyID = () => {
       <Button onClick={handleOpenTable} bg="green.500" color="white" mr={4}>
         Открыть таблицу
       </Button>
+      {errorMessage && (
+        <Box mt={4}>
+          <p style={{ color: 'red' }}>{errorMessage}</p>
+        </Box>
+      )}
       {showTable && userData && (
         <Box mt={4}>
-          {errorMessage && (
-            <p style={{ color: 'red' }}>{errorMessage}</p>
-          )}
           <Table variant="simple">
             <Tbody>
               <Tr>
